@@ -3,318 +3,273 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EliteShop - Premium Online Shopping</title>
+    <title>ShopEase - Your Shopping Destination</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        body { font-family: 'Inter', sans-serif; }
-        .product-card:hover { transform: translateY(-4px); }
-        .cart-badge { animation: bounce 0.5s ease-in-out; }
+        .product-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        .cart-badge {
+            animation: bounce 0.5s ease-in-out;
+        }
         @keyframes bounce {
             0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
             40% { transform: translateY(-10px); }
             60% { transform: translateY(-5px); }
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body class="bg-gray-50">
     <!-- Header -->
     <header class="bg-white shadow-lg sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <div class="flex items-center">
-                    <h1 class="text-2xl font-bold text-indigo-600">EliteShop</h1>
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                        <span class="text-white font-bold text-xl">S</span>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-800">ShopEase</h1>
+                        <p class="text-sm text-gray-600">"Quality Products, Unbeatable Prices"</p>
+                    </div>
                 </div>
-                <nav class="hidden md:flex space-x-8">
-                    <a href="#" class="text-gray-700 hover:text-indigo-600 font-medium">Home</a>
-                    <a href="#products" class="text-gray-700 hover:text-indigo-600 font-medium">Products</a>
-                    <a href="#" class="text-gray-700 hover:text-indigo-600 font-medium">Categories</a>
-                    <a href="#" class="text-gray-700 hover:text-indigo-600 font-medium">About</a>
-                </nav>
+                
                 <div class="flex items-center space-x-4">
-                    <button onclick="toggleCart()" class="relative p-2 text-gray-700 hover:text-indigo-600">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.5 6M7 13l-1.5 6m0 0h9m-9 0V19a2 2 0 002 2h7a2 2 0 002-2v-.5"></path>
-                        </svg>
-                        <span id="cartCount" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center cart-badge">0</span>
+                    <div class="relative">
+                        <input type="text" id="searchInput" placeholder="Search products..." 
+                               class="w-64 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <button onclick="searchProducts()" class="absolute right-2 top-2 text-gray-500 hover:text-blue-500">
+                            🔍
+                        </button>
+                    </div>
+                    
+                    <button onclick="toggleCart()" class="relative bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors">
+                        🛒 Cart
+                        <span id="cartCount" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs">0</span>
                     </button>
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- Hero Section -->
-    <section class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-20">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 class="text-4xl md:text-6xl font-bold mb-6">Premium Shopping Experience</h2>
-            <p class="text-xl mb-8 opacity-90">Discover amazing products with fast home delivery across India</p>
-            <button onclick="document.getElementById('products').scrollIntoView({behavior: 'smooth'})" class="bg-white text-indigo-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition duration-300">Shop Now</button>
+    <!-- Demo Notice -->
+    <div class="bg-yellow-100 border-l-4 border-yellow-500 p-4 mb-6">
+        <div class="container mx-auto">
+            <p class="text-yellow-700">
+                <strong>Demo Website:</strong> This is a sample shopping website for demonstration purposes only. No real transactions will be processed.
+            </p>
         </div>
-    </section>
+    </div>
 
-    <!-- Products Section -->
-    <section id="products" class="py-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h3 class="text-3xl font-bold text-center mb-12 text-gray-800">Featured Products</h3>
-            
-            <!-- Category Filter -->
-            <div class="flex flex-wrap justify-center mb-8 space-x-2 space-y-2">
-                <button onclick="filterProducts('all')" class="filter-btn bg-indigo-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-indigo-700 transition duration-300">All</button>
-                <button onclick="filterProducts('electronics')" class="filter-btn bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium hover:bg-gray-300 transition duration-300">Electronics</button>
-                <button onclick="filterProducts('fashion')" class="filter-btn bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium hover:bg-gray-300 transition duration-300">Fashion</button>
-                <button onclick="filterProducts('home')" class="filter-btn bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium hover:bg-gray-300 transition duration-300">Home & Garden</button>
-                <button onclick="filterProducts('sports')" class="filter-btn bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium hover:bg-gray-300 transition duration-300">Sports</button>
-            </div>
-
-            <!-- Products Grid -->
-            <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                <!-- Products will be dynamically loaded here -->
-            </div>
-        </div>
-    </section>
-
-    <!-- Cart Sidebar -->
-    <div id="cartSidebar" class="fixed right-0 top-0 h-full w-96 bg-white shadow-2xl transform translate-x-full transition-transform duration-300 z-50">
-        <div class="p-6 border-b">
-            <div class="flex justify-between items-center">
-                <h3 class="text-xl font-bold">Shopping Cart</h3>
-                <button onclick="toggleCart()" class="text-gray-500 hover:text-gray-700">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                </button>
-            </div>
-        </div>
-        <div id="cartItems" class="flex-1 overflow-y-auto p-6">
-            <p class="text-gray-500 text-center">Your cart is empty</p>
-        </div>
-        <div class="border-t p-6">
-            <div class="flex justify-between items-center mb-4">
-                <span class="text-lg font-semibold">Total: ₹<span id="cartTotal">0</span></span>
-            </div>
-            <button onclick="checkout()" class="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition duration-300">
-                Proceed to Checkout (Demo)
+    <!-- Categories -->
+    <section class="container mx-auto px-4 py-6">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">Shop by Category</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-8">
+            <button onclick="filterByCategory('all')" class="category-btn bg-blue-500 text-white p-4 rounded-lg hover:bg-blue-600 transition-colors">
+                All Products
             </button>
+            <button onclick="filterByCategory('electronics')" class="category-btn bg-white border-2 border-gray-200 p-4 rounded-lg hover:border-blue-500 transition-colors">
+                📱 Electronics
+            </button>
+            <button onclick="filterByCategory('clothing')" class="category-btn bg-white border-2 border-gray-200 p-4 rounded-lg hover:border-blue-500 transition-colors">
+                👕 Clothing
+            </button>
+            <button onclick="filterByCategory('home')" class="category-btn bg-white border-2 border-gray-200 p-4 rounded-lg hover:border-blue-500 transition-colors">
+                🏠 Home & Garden
+            </button>
+            <button onclick="filterByCategory('books')" class="category-btn bg-white border-2 border-gray-200 p-4 rounded-lg hover:border-blue-500 transition-colors">
+                📚 Books
+            </button>
+            <button onclick="filterByCategory('sports')" class="category-btn bg-white border-2 border-gray-200 p-4 rounded-lg hover:border-blue-500 transition-colors">
+                ⚽ Sports
+            </button>
+        </div>
+    </section>
+
+    <!-- Products Grid -->
+    <section class="container mx-auto px-4 py-6">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold text-gray-800">Featured Products</h2>
+            <select id="sortSelect" onchange="sortProducts()" class="px-4 py-2 border border-gray-300 rounded-lg">
+                <option value="name">Sort by Name</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+            </select>
+        </div>
+        
+        <div id="productsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <!-- Products will be loaded here -->
+        </div>
+    </section>
+
+    <!-- Shopping Cart Modal -->
+    <div id="cartModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-lg max-w-2xl w-full max-h-96 overflow-y-auto">
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-bold">Shopping Cart</h3>
+                        <button onclick="toggleCart()" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+                    </div>
+                    
+                    <div id="cartItems" class="space-y-4 mb-6">
+                        <!-- Cart items will be loaded here -->
+                    </div>
+                    
+                    <div class="border-t pt-4">
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-lg font-bold">Total: ₹<span id="cartTotal">0</span></span>
+                        </div>
+                        <button onclick="proceedToCheckout()" class="w-full bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg font-semibold transition-colors">
+                            Proceed to Checkout
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
     <!-- Checkout Modal -->
-    <div id="checkoutModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-lg max-w-md w-full p-6">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-xl font-bold">Checkout (Demo)</h3>
-                <button onclick="closeCheckout()" class="text-gray-500 hover:text-gray-700">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                </button>
-            </div>
-            
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Delivery Address</label>
-                    <textarea class="w-full p-3 border border-gray-300 rounded-lg" rows="3" placeholder="Enter your complete address"></textarea>
+    <div id="checkoutModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-lg max-w-md w-full">
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-bold">Checkout - Demo</h3>
+                        <button onclick="closeCheckout()" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+                    </div>
+                    
+                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+                        <p class="text-yellow-800 text-sm">
+                            <strong>Demo Mode:</strong> This is a sample checkout. No real payment will be processed.
+                        </p>
+                    </div>
+                    
+                    <form id="checkoutForm" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                            <input type="text" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">District</label>
+                            <input type="text" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">City</label>
+                            <input type="text" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Delivery Address</label>
+                            <textarea required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" rows="3"></textarea>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Payment Method</label>
+                            <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="cod">Cash on Delivery</option>
+                                <option value="demo">Demo Payment (Sample)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="border-t pt-4">
+                            <div class="flex justify-between items-center mb-4">
+                                <span class="font-semibold">Total Amount: ₹<span id="checkoutTotal">0</span></span>
+                            </div>
+                            <button type="submit" class="w-full bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg font-semibold transition-colors">
+                                Place Order (Demo)
+                            </button>
+                        </div>
+                    </form>
                 </div>
-                
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Payment Method (Demo)</label>
-                    <select class="w-full p-3 border border-gray-300 rounded-lg">
-                        <option>UPI Payment</option>
-                        <option>Credit/Debit Card</option>
-                        <option>Net Banking</option>
-                        <option>Cash on Delivery</option>
-                    </select>
-                </div>
-                
-                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                    <p class="text-sm text-yellow-800">
-                        <strong>Demo Notice:</strong> This is a demonstration. No actual payment will be processed or delivery scheduled.
-                    </p>
-                </div>
-                
-                <div class="flex justify-between items-center text-lg font-semibold">
-                    <span>Total Amount:</span>
-                    <span>₹<span id="checkoutTotal">0</span></span>
-                </div>
-                
-                <button onclick="placeOrder()" class="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition duration-300">
-                    Place Order (Demo)
-                </button>
             </div>
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="bg-gray-800 text-white py-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <div>
-                    <h4 class="text-lg font-semibold mb-4">EliteShop</h4>
-                    <p class="text-gray-400">Premium online shopping experience with fast delivery across India.</p>
-                </div>
-                <div>
-                    <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
-                    <ul class="space-y-2 text-gray-400">
-                        <li><a href="#" class="hover:text-white">About Us</a></li>
-                        <li><a href="#" class="hover:text-white">Contact</a></li>
-                        <li><a href="#" class="hover:text-white">FAQ</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-lg font-semibold mb-4">Customer Service</h4>
-                    <ul class="space-y-2 text-gray-400">
-                        <li><a href="#" class="hover:text-white">Return Policy</a></li>
-                        <li><a href="#" class="hover:text-white">Shipping Info</a></li>
-                        <li><a href="#" class="hover:text-white">Track Order</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-lg font-semibold mb-4">Connect</h4>
-                    <p class="text-gray-400">📞 1800-123-4567</p>
-                    <p class="text-gray-400">📧 support@eliteshop.com</p>
-                </div>
-            </div>
-        </div>
-    </footer>
-
     <script>
-        // Product data with 100+ items
+        // Sample product data
         const products = [
             // Electronics
-            {id: 1, name: "iPhone 15 Pro", price: 134900, category: "electronics", image: "📱", description: "Latest iPhone with advanced features"},
-            {id: 2, name: "Samsung Galaxy S24", price: 89999, category: "electronics", image: "📱", description: "Premium Android smartphone"},
-            {id: 3, name: "MacBook Air M3", price: 114900, category: "electronics", image: "💻", description: "Powerful laptop for professionals"},
-            {id: 4, name: "Dell XPS 13", price: 89999, category: "electronics", image: "💻", description: "Ultra-portable laptop"},
-            {id: 5, name: "iPad Pro", price: 81900, category: "electronics", image: "📱", description: "Professional tablet"},
-            {id: 6, name: "AirPods Pro", price: 24900, category: "electronics", image: "🎧", description: "Wireless earbuds with noise cancellation"},
-            {id: 7, name: "Sony WH-1000XM5", price: 29990, category: "electronics", image: "🎧", description: "Premium noise-canceling headphones"},
-            {id: 8, name: "Canon EOS R6", price: 189999, category: "electronics", image: "📷", description: "Professional mirrorless camera"},
-            {id: 9, name: "Nintendo Switch", price: 29999, category: "electronics", image: "🎮", description: "Portable gaming console"},
-            {id: 10, name: "PlayStation 5", price: 54990, category: "electronics", image: "🎮", description: "Next-gen gaming console"},
-            {id: 11, name: "Samsung 55\" QLED TV", price: 74999, category: "electronics", image: "📺", description: "4K Smart TV"},
-            {id: 12, name: "Apple Watch Series 9", price: 41900, category: "electronics", image: "⌚", description: "Advanced smartwatch"},
-            {id: 13, name: "Kindle Paperwhite", price: 13999, category: "electronics", image: "📖", description: "E-reader with backlight"},
-            {id: 14, name: "JBL Charge 5", price: 12999, category: "electronics", image: "🔊", description: "Portable Bluetooth speaker"},
-            {id: 15, name: "GoPro Hero 12", price: 44999, category: "electronics", image: "📹", description: "Action camera"},
-            {id: 16, name: "Dyson V15 Detect", price: 59900, category: "electronics", image: "🧹", description: "Cordless vacuum cleaner"},
-            {id: 17, name: "Fitbit Charge 6", price: 15999, category: "electronics", image: "⌚", description: "Fitness tracker"},
-            {id: 18, name: "Bose SoundLink", price: 8999, category: "electronics", image: "🔊", description: "Compact Bluetooth speaker"},
-            {id: 19, name: "Ring Video Doorbell", price: 14999, category: "electronics", image: "🔔", description: "Smart doorbell with camera"},
-            {id: 20, name: "Nest Thermostat", price: 18999, category: "electronics", image: "🌡️", description: "Smart home thermostat"},
-            {id: 21, name: "Philips Hue Starter Kit", price: 12999, category: "electronics", image: "💡", description: "Smart lighting system"},
-            {id: 22, name: "Amazon Echo Dot", price: 4499, category: "electronics", image: "🔊", description: "Smart speaker with Alexa"},
-            {id: 23, name: "Logitech MX Master 3", price: 8999, category: "electronics", image: "🖱️", description: "Wireless mouse"},
-            {id: 24, name: "Mechanical Keyboard", price: 12999, category: "electronics", image: "⌨️", description: "Gaming mechanical keyboard"},
-            {id: 25, name: "Webcam 4K", price: 7999, category: "electronics", image: "📹", description: "High-resolution webcam"},
-
-            // Fashion
-            {id: 26, name: "Designer Leather Jacket", price: 15999, category: "fashion", image: "🧥", description: "Premium leather jacket"},
-            {id: 27, name: "Silk Saree", price: 8999, category: "fashion", image: "👗", description: "Traditional silk saree"},
-            {id: 28, name: "Formal Suit", price: 25999, category: "fashion", image: "👔", description: "3-piece formal suit"},
-            {id: 29, name: "Designer Handbag", price: 12999, category: "fashion", image: "👜", description: "Luxury handbag"},
-            {id: 30, name: "Running Shoes", price: 7999, category: "fashion", image: "👟", description: "Professional running shoes"},
-            {id: 31, name: "Denim Jeans", price: 3999, category: "fashion", image: "👖", description: "Premium denim jeans"},
-            {id: 32, name: "Cashmere Sweater", price: 9999, category: "fashion", image: "🧥", description: "Soft cashmere sweater"},
-            {id: 33, name: "Formal Dress", price: 6999, category: "fashion", image: "👗", description: "Elegant formal dress"},
-            {id: 34, name: "Leather Boots", price: 11999, category: "fashion", image: "👢", description: "Genuine leather boots"},
-            {id: 35, name: "Sunglasses", price: 4999, category: "fashion", image: "🕶️", description: "Designer sunglasses"},
-            {id: 36, name: "Wrist Watch", price: 18999, category: "fashion", image: "⌚", description: "Luxury wrist watch"},
-            {id: 37, name: "Scarf", price: 2999, category: "fashion", image: "🧣", description: "Silk scarf"},
-            {id: 38, name: "Belt", price: 3999, category: "fashion", image: "👔", description: "Leather belt"},
-            {id: 39, name: "Cap", price: 1999, category: "fashion", image: "🧢", description: "Baseball cap"},
-            {id: 40, name: "Backpack", price: 5999, category: "fashion", image: "🎒", description: "Travel backpack"},
-            {id: 41, name: "Wallet", price: 2999, category: "fashion", image: "👛", description: "Leather wallet"},
-            {id: 42, name: "Tie", price: 1999, category: "fashion", image: "👔", description: "Silk tie"},
-            {id: 43, name: "Gloves", price: 1499, category: "fashion", image: "🧤", description: "Winter gloves"},
-            {id: 44, name: "Socks Set", price: 999, category: "fashion", image: "🧦", description: "Cotton socks set"},
-            {id: 45, name: "Pajama Set", price: 2999, category: "fashion", image: "👔", description: "Comfortable pajama set"},
-            {id: 46, name: "Kurta", price: 3999, category: "fashion", image: "👔", description: "Traditional kurta"},
-            {id: 47, name: "Lehenga", price: 19999, category: "fashion", image: "👗", description: "Designer lehenga"},
-            {id: 48, name: "Sherwani", price: 15999, category: "fashion", image: "👔", description: "Wedding sherwani"},
-            {id: 49, name: "Ethnic Jewelry", price: 7999, category: "fashion", image: "💍", description: "Traditional jewelry set"},
-            {id: 50, name: "Formal Shoes", price: 8999, category: "fashion", image: "👞", description: "Leather formal shoes"},
-
+            { id: 1, name: "Smartphone Pro Max", price: 79999, category: "electronics", image: "📱", description: "Latest flagship smartphone with advanced features" },
+            { id: 2, name: "Wireless Headphones", price: 4999, category: "electronics", image: "🎧", description: "Premium noise-cancelling headphones" },
+            { id: 3, name: "Laptop Gaming", price: 89999, category: "electronics", image: "💻", description: "High-performance gaming laptop" },
+            { id: 4, name: "Smart Watch", price: 24999, category: "electronics", image: "⌚", description: "Fitness tracking smartwatch" },
+            { id: 5, name: "Bluetooth Speaker", price: 3499, category: "electronics", image: "🔊", description: "Portable wireless speaker" },
+            
+            // Clothing
+            { id: 6, name: "Cotton T-Shirt", price: 799, category: "clothing", image: "👕", description: "Comfortable cotton t-shirt" },
+            { id: 7, name: "Denim Jeans", price: 1999, category: "clothing", image: "👖", description: "Classic blue denim jeans" },
+            { id: 8, name: "Formal Shirt", price: 1499, category: "clothing", image: "👔", description: "Professional formal shirt" },
+            { id: 9, name: "Summer Dress", price: 2499, category: "clothing", image: "👗", description: "Elegant summer dress" },
+            { id: 10, name: "Sports Shoes", price: 3999, category: "clothing", image: "👟", description: "Comfortable running shoes" },
+            
             // Home & Garden
-            {id: 51, name: "Sofa Set", price: 45999, category: "home", image: "🛋️", description: "3-seater sofa set"},
-            {id: 52, name: "Dining Table", price: 25999, category: "home", image: "🪑", description: "6-seater dining table"},
-            {id: 53, name: "Bed Frame", price: 18999, category: "home", image: "🛏️", description: "King size bed frame"},
-            {id: 54, name: "Wardrobe", price: 32999, category: "home", image: "🚪", description: "4-door wardrobe"},
-            {id: 55, name: "Refrigerator", price: 35999, category: "home", image: "❄️", description: "Double door refrigerator"},
-            {id: 56, name: "Washing Machine", price: 28999, category: "home", image: "🧺", description: "Front load washing machine"},
-            {id: 57, name: "Air Conditioner", price: 42999, category: "home", image: "❄️", description: "Split AC 1.5 ton"},
-            {id: 58, name: "Microwave Oven", price: 12999, category: "home", image: "🔥", description: "Convection microwave"},
-            {id: 59, name: "Coffee Maker", price: 8999, category: "home", image: "☕", description: "Automatic coffee maker"},
-            {id: 60, name: "Blender", price: 4999, category: "home", image: "🥤", description: "High-speed blender"},
-            {id: 61, name: "Curtains", price: 3999, category: "home", image: "🪟", description: "Blackout curtains"},
-            {id: 62, name: "Carpet", price: 7999, category: "home", image: "🏠", description: "Persian carpet"},
-            {id: 63, name: "Table Lamp", price: 2999, category: "home", image: "💡", description: "Designer table lamp"},
-            {id: 64, name: "Wall Clock", price: 1999, category: "home", image: "🕐", description: "Decorative wall clock"},
-            {id: 65, name: "Flower Vase", price: 1499, category: "home", image: "🏺", description: "Ceramic flower vase"},
-            {id: 66, name: "Photo Frame", price: 999, category: "home", image: "🖼️", description: "Wooden photo frame"},
-            {id: 67, name: "Cushion Covers", price: 1999, category: "home", image: "🛋️", description: "Set of 4 cushion covers"},
-            {id: 68, name: "Bed Sheets", price: 2999, category: "home", image: "🛏️", description: "Cotton bed sheet set"},
-            {id: 69, name: "Towel Set", price: 1999, category: "home", image: "🏠", description: "Bath towel set"},
-            {id: 70, name: "Kitchen Utensils", price: 3999, category: "home", image: "🍴", description: "Stainless steel utensil set"},
-            {id: 71, name: "Pressure Cooker", price: 2999, category: "home", image: "🍲", description: "5L pressure cooker"},
-            {id: 72, name: "Non-stick Pan Set", price: 4999, category: "home", image: "🍳", description: "3-piece pan set"},
-            {id: 73, name: "Water Purifier", price: 15999, category: "home", image: "💧", description: "RO water purifier"},
-            {id: 74, name: "Garden Tools", price: 2999, category: "home", image: "🌱", description: "Gardening tool set"},
-            {id: 75, name: "Plant Pots", price: 1999, category: "home", image: "🪴", description: "Ceramic plant pots set"},
-
+            { id: 11, name: "Coffee Maker", price: 8999, category: "home", image: "☕", description: "Automatic coffee brewing machine" },
+            { id: 12, name: "Indoor Plant", price: 599, category: "home", image: "🪴", description: "Beautiful indoor decorative plant" },
+            { id: 13, name: "Table Lamp", price: 2499, category: "home", image: "💡", description: "Modern LED table lamp" },
+            { id: 14, name: "Cooking Pan Set", price: 4999, category: "home", image: "🍳", description: "Non-stick cooking pan set" },
+            { id: 15, name: "Wall Clock", price: 1299, category: "home", image: "🕐", description: "Decorative wall clock" },
+            
+            // Books
+            { id: 16, name: "Programming Guide", price: 899, category: "books", image: "📖", description: "Complete programming tutorial book" },
+            { id: 17, name: "Fiction Novel", price: 499, category: "books", image: "📚", description: "Bestselling fiction novel" },
+            { id: 18, name: "Cookbook", price: 699, category: "books", image: "👨‍🍳", description: "Delicious recipes cookbook" },
+            { id: 19, name: "Self-Help Book", price: 599, category: "books", image: "📝", description: "Personal development guide" },
+            { id: 20, name: "Children's Book", price: 399, category: "books", image: "🧸", description: "Colorful children's storybook" },
+            
             // Sports
-            {id: 76, name: "Treadmill", price: 45999, category: "sports", image: "🏃", description: "Electric treadmill"},
-            {id: 77, name: "Dumbbells Set", price: 8999, category: "sports", image: "🏋️", description: "Adjustable dumbbells"},
-            {id: 78, name: "Yoga Mat", price: 1999, category: "sports", image: "🧘", description: "Premium yoga mat"},
-            {id: 79, name: "Cricket Bat", price: 4999, category: "sports", image: "🏏", description: "Professional cricket bat"},
-            {id: 80, name: "Football", price: 1999, category: "sports", image: "⚽", description: "FIFA approved football"},
-            {id: 81, name: "Basketball", price: 2499, category: "sports", image: "🏀", description: "Official size basketball"},
-            {id: 82, name: "Tennis Racket", price: 6999, category: "sports", image: "🎾", description: "Professional tennis racket"},
-            {id: 83, name: "Badminton Set", price: 3999, category: "sports", image: "🏸", description: "Complete badminton set"},
-            {id: 84, name: "Cycling Helmet", price: 2999, category: "sports", image: "🚴", description: "Safety cycling helmet"},
-            {id: 85, name: "Swimming Goggles", price: 1499, category: "sports", image: "🏊", description: "Anti-fog swimming goggles"},
-            {id: 86, name: "Gym Bag", price: 2999, category: "sports", image: "🎒", description: "Sports gym bag"},
-            {id: 87, name: "Protein Shaker", price: 999, category: "sports", image: "🥤", description: "Protein shaker bottle"},
-            {id: 88, name: "Resistance Bands", price: 1999, category: "sports", image: "🏋️", description: "Exercise resistance bands"},
-            {id: 89, name: "Boxing Gloves", price: 3999, category: "sports", image: "🥊", description: "Professional boxing gloves"},
-            {id: 90, name: "Skipping Rope", price: 999, category: "sports", image: "🏃", description: "Speed skipping rope"},
-            {id: 91, name: "Exercise Bike", price: 25999, category: "sports", image: "🚴", description: "Stationary exercise bike"},
-            {id: 92, name: "Pull-up Bar", price: 2999, category: "sports", image: "🏋️", description: "Doorway pull-up bar"},
-            {id: 93, name: "Ab Roller", price: 1999, category: "sports", image: "🏋️", description: "Ab exercise roller"},
-            {id: 94, name: "Kettlebell", price: 3999, category: "sports", image: "🏋️", description: "Cast iron kettlebell"},
-            {id: 95, name: "Medicine Ball", price: 2999, category: "sports", image: "🏋️", description: "Weighted medicine ball"},
-            {id: 96, name: "Foam Roller", price: 1999, category: "sports", image: "🏋️", description: "Muscle recovery foam roller"},
-            {id: 97, name: "Sports Watch", price: 12999, category: "sports", image: "⌚", description: "GPS sports watch"},
-            {id: 98, name: "Water Bottle", price: 999, category: "sports", image: "💧", description: "Insulated water bottle"},
-            {id: 99, name: "Workout Gloves", price: 1499, category: "sports", image: "🧤", description: "Gym workout gloves"},
-            {id: 100, name: "Fitness Tracker", price: 7999, category: "sports", image: "⌚", description: "Activity fitness tracker"}
+            { id: 21, name: "Football", price: 1499, category: "sports", image: "⚽", description: "Professional quality football" },
+            { id: 22, name: "Cricket Bat", price: 2999, category: "sports", image: "🏏", description: "Premium cricket bat" },
+            { id: 23, name: "Yoga Mat", price: 1299, category: "sports", image: "🧘", description: "Non-slip yoga exercise mat" },
+            { id: 24, name: "Dumbbells Set", price: 4999, category: "sports", image: "🏋", description: "Adjustable dumbbells set" },
+            { id: 25, name: "Tennis Racket", price: 3499, category: "sports", image: "🎾", description: "Professional tennis racket" }
         ];
 
         let cart = [];
-        let currentFilter = 'all';
+        let currentProducts = [...products];
 
         // Initialize the page
         document.addEventListener('DOMContentLoaded', function() {
             displayProducts(products);
+            updateCartDisplay();
         });
 
         // Display products
         function displayProducts(productsToShow) {
             const grid = document.getElementById('productsGrid');
             grid.innerHTML = '';
-
+            
             productsToShow.forEach(product => {
                 const productCard = document.createElement('div');
-                productCard.className = 'product-card bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl';
+                productCard.className = 'product-card bg-white rounded-lg shadow-md overflow-hidden fade-in';
                 productCard.innerHTML = `
                     <div class="p-6">
                         <div class="text-6xl mb-4 text-center">${product.image}</div>
-                        <h4 class="text-lg font-semibold mb-2 text-gray-800">${product.name}</h4>
+                        <h3 class="text-lg font-semibold text-gray-800 mb-2">${product.name}</h3>
                         <p class="text-gray-600 text-sm mb-4">${product.description}</p>
                         <div class="flex justify-between items-center">
-                            <span class="text-2xl font-bold text-indigo-600">₹${product.price.toLocaleString()}</span>
-                            <button onclick="addToCart(${product.id})" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition duration-300">
-                                Add to Cart
-                            </button>
+                            <span class="text-2xl font-bold text-green-600">₹${product.price.toLocaleString()}</span>
+                            <div class="space-x-2">
+                                <button onclick="addToCart(${product.id})" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors">
+                                    Add to Cart
+                                </button>
+                                <button onclick="buyNow(${product.id})" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition-colors">
+                                    Buy Now
+                                </button>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -322,75 +277,119 @@
             });
         }
 
-        // Filter products
-        function filterProducts(category) {
-            currentFilter = category;
-            const filteredProducts = category === 'all' ? products : products.filter(p => p.category === category);
-            displayProducts(filteredProducts);
-
-            // Update filter buttons
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.className = 'filter-btn bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium hover:bg-gray-300 transition duration-300';
+        // Filter products by category
+        function filterByCategory(category) {
+            // Update button styles
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.className = 'category-btn bg-white border-2 border-gray-200 p-4 rounded-lg hover:border-blue-500 transition-colors';
             });
-            event.target.className = 'filter-btn bg-indigo-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-indigo-700 transition duration-300';
+            event.target.className = 'category-btn bg-blue-500 text-white p-4 rounded-lg hover:bg-blue-600 transition-colors';
+            
+            if (category === 'all') {
+                currentProducts = [...products];
+            } else {
+                currentProducts = products.filter(product => product.category === category);
+            }
+            displayProducts(currentProducts);
+        }
+
+        // Search products
+        function searchProducts() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const filteredProducts = products.filter(product => 
+                product.name.toLowerCase().includes(searchTerm) || 
+                product.description.toLowerCase().includes(searchTerm)
+            );
+            currentProducts = filteredProducts;
+            displayProducts(filteredProducts);
+        }
+
+        // Sort products
+        function sortProducts() {
+            const sortBy = document.getElementById('sortSelect').value;
+            let sortedProducts = [...currentProducts];
+            
+            switch(sortBy) {
+                case 'name':
+                    sortedProducts.sort((a, b) => a.name.localeCompare(b.name));
+                    break;
+                case 'price-low':
+                    sortedProducts.sort((a, b) => a.price - b.price);
+                    break;
+                case 'price-high':
+                    sortedProducts.sort((a, b) => b.price - a.price);
+                    break;
+            }
+            
+            displayProducts(sortedProducts);
         }
 
         // Add to cart
         function addToCart(productId) {
             const product = products.find(p => p.id === productId);
             const existingItem = cart.find(item => item.id === productId);
-
+            
             if (existingItem) {
                 existingItem.quantity += 1;
             } else {
-                cart.push({...product, quantity: 1});
+                cart.push({ ...product, quantity: 1 });
             }
-
-            updateCartUI();
+            
+            updateCartDisplay();
+            
+            // Add bounce animation to cart button
+            const cartCount = document.getElementById('cartCount');
+            cartCount.classList.add('cart-badge');
+            setTimeout(() => cartCount.classList.remove('cart-badge'), 500);
         }
 
-        // Update cart UI
-        function updateCartUI() {
-            const cartCount = document.getElementById('cartCount');
-            const cartItems = document.getElementById('cartItems');
-            const cartTotal = document.getElementById('cartTotal');
+        // Buy now
+        function buyNow(productId) {
+            addToCart(productId);
+            toggleCart();
+        }
 
-            // Update cart count
+        // Update cart display
+        function updateCartDisplay() {
+            const cartCount = document.getElementById('cartCount');
             const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
             cartCount.textContent = totalItems;
-            cartCount.className = totalItems > 0 ? 'absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center cart-badge' : 'absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center';
-
-            // Update cart items
+            
+            const cartItems = document.getElementById('cartItems');
+            const cartTotal = document.getElementById('cartTotal');
+            
             if (cart.length === 0) {
-                cartItems.innerHTML = '<p class="text-gray-500 text-center">Your cart is empty</p>';
-            } else {
-                cartItems.innerHTML = cart.map(item => `
-                    <div class="flex items-center justify-between mb-4 p-3 bg-gray-50 rounded-lg">
-                        <div class="flex items-center">
-                            <span class="text-2xl mr-3">${item.image}</span>
-                            <div>
-                                <h5 class="font-medium text-sm">${item.name}</h5>
-                                <p class="text-gray-600 text-xs">₹${item.price.toLocaleString()} x ${item.quantity}</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center space-x-2">
-                            <button onclick="updateQuantity(${item.id}, -1)" class="bg-gray-200 text-gray-700 w-6 h-6 rounded-full text-xs hover:bg-gray-300">-</button>
-                            <span class="text-sm">${item.quantity}</span>
-                            <button onclick="updateQuantity(${item.id}, 1)" class="bg-gray-200 text-gray-700 w-6 h-6 rounded-full text-xs hover:bg-gray-300">+</button>
-                            <button onclick="removeFromCart(${item.id})" class="text-red-500 hover:text-red-700 ml-2">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                </svg>
-                            </button>
+                cartItems.innerHTML = '<p class="text-gray-500 text-center py-8">Your cart is empty</p>';
+                cartTotal.textContent = '0';
+                return;
+            }
+            
+            cartItems.innerHTML = '';
+            let total = 0;
+            
+            cart.forEach(item => {
+                total += item.price * item.quantity;
+                const cartItem = document.createElement('div');
+                cartItem.className = 'flex items-center justify-between p-4 border border-gray-200 rounded-lg';
+                cartItem.innerHTML = `
+                    <div class="flex items-center space-x-4">
+                        <span class="text-2xl">${item.image}</span>
+                        <div>
+                            <h4 class="font-semibold">${item.name}</h4>
+                            <p class="text-gray-600">₹${item.price.toLocaleString()}</p>
                         </div>
                     </div>
-                `).join('');
-            }
-
-            // Update total
-            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                    <div class="flex items-center space-x-2">
+                        <button onclick="updateQuantity(${item.id}, -1)" class="bg-gray-200 hover:bg-gray-300 w-8 h-8 rounded-full flex items-center justify-center">-</button>
+                        <span class="w-8 text-center">${item.quantity}</span>
+                        <button onclick="updateQuantity(${item.id}, 1)" class="bg-gray-200 hover:bg-gray-300 w-8 h-8 rounded-full flex items-center justify-center">+</button>
+                        <button onclick="removeFromCart(${item.id})" class="text-red-500 hover:text-red-700 ml-2">🗑</button>
+                    </div>
+                `;
+                cartItems.appendChild(cartItem);
+            });
+            
             cartTotal.textContent = total.toLocaleString();
-            document.getElementById('checkoutTotal').textContent = total.toLocaleString();
         }
 
         // Update quantity
@@ -401,7 +400,7 @@
                 if (item.quantity <= 0) {
                     removeFromCart(productId);
                 } else {
-                    updateCartUI();
+                    updateCartDisplay();
                 }
             }
         }
@@ -409,21 +408,26 @@
         // Remove from cart
         function removeFromCart(productId) {
             cart = cart.filter(item => item.id !== productId);
-            updateCartUI();
+            updateCartDisplay();
         }
 
-        // Toggle cart sidebar
+        // Toggle cart modal
         function toggleCart() {
-            const sidebar = document.getElementById('cartSidebar');
-            sidebar.classList.toggle('translate-x-full');
+            const modal = document.getElementById('cartModal');
+            modal.classList.toggle('hidden');
         }
 
-        // Checkout
-        function checkout() {
+        // Proceed to checkout
+        function proceedToCheckout() {
             if (cart.length === 0) {
                 alert('Your cart is empty!');
                 return;
             }
+            
+            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            document.getElementById('checkoutTotal').textContent = total.toLocaleString();
+            
+            document.getElementById('cartModal').classList.add('hidden');
             document.getElementById('checkoutModal').classList.remove('hidden');
         }
 
@@ -432,14 +436,25 @@
             document.getElementById('checkoutModal').classList.add('hidden');
         }
 
-        // Place order
-        function placeOrder() {
-            alert('Demo Order Placed Successfully! 🎉\n\nThis is a demonstration. In a real application, your order would be processed and delivery would be scheduled.\n\nThank you for trying EliteShop!');
+        // Handle checkout form submission
+        document.getElementById('checkoutForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Simulate order processing
+            alert('Demo Order Placed Successfully! 🎉\n\nThis is a demonstration. No real order has been processed.\n\nThank you for trying our demo shopping website!');
+            
+            // Clear cart and close modals
             cart = [];
-            updateCartUI();
+            updateCartDisplay();
             closeCheckout();
-            toggleCart();
-        }
+        });
+
+        // Search on Enter key
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchProducts();
+            }
+        });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'976c8372a7558583',t:'MTc1NjQ3NTM4Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'976d369a901a85ba',t:'MTc1NjQ4MjcyMy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
